@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ELIAN Solutions — Propunere Redesign 2026</title>
+  <meta name="description" content="Propunere de redesign pentru ELIAN Solutions — platforma ERP enterprise Microsoft Dynamics 365 Business Central" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #060608;
+      --white: #FAFAF9;
+      --mid: #0D0D12;
+      --surface: #111118;
+      --card: #16161F;
+      --accent: #3B6FF0;
+      --accent2: #6C47FF;
+      --accent-glow: rgba(59,111,240,0.18);
+      --green: #00E5A0;
+      --text: #E8E8F0;
+      --muted: #7070A0;
+      --border: rgba(255,255,255,0.07);
+      --border-hover: rgba(255,255,255,0.14);
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NOISE TEXTURE ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── GRID LINES ── */
+    .grid-lines {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 32px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 0 32px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: rgba(6,6,8,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--white);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-logo .logo-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+      animation: pulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.85); }
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.01em;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 22px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 24px rgba(59,111,240,0.35);
+    }
+    .btn-primary:hover {
+      background: #4d7df5;
+      box-shadow: 0 0 32px rgba(59,111,240,0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border-hover);
+    }
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 68px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+    }
+    .hero-glow-1 {
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(59,111,240,0.2) 0%, transparent 70%);
+      top: -200px; right: -100px;
+    }
+    .hero-glow-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(108,71,255,0.15) 0%, transparent 70%);
+      bottom: -100px; left: -50px;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      padding: 80px 0 100px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(59,111,240,0.12);
+      border: 1px solid rgba(59,111,240,0.3);
+      color: #7fa8f8;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+
+    .hero-badge .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: clamp(42px, 5.5vw, 68px);
+      font-weight: 800;
+      line-height: 1.04;
+      letter-spacing: -2px;
+      color: var(--white);
+      margin-bottom: 24px;
+    }
+
+    h1 .accent-text {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 40px;
+      max-width: 480px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 56px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .stat-item {
+      padding: 22px 24px;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-num span { color: var(--accent); }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    /* Hero right — visual panel */
+    .hero-visual {
+      position: relative;
+    }
+
+    .hero-card-main {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card-main::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(59,111,240,0.5), transparent);
+    }
+
+    .dashboard-preview {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .dash-title {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .dash-badge {
+      font-size: 11px;
+      background: rgba(0,229,160,0.12);
+      color: var(--green);
+      border: 1px solid rgba(0,229,160,0.25);
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+
+    .dash-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .dash-metric {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+
+    .dash-metric-val {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.5px;
+    }
+
+    .dash-metric-lbl {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .dash-chart {
+      height: 64px;
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .bar {
+      flex: 1;
+      border-radius: 4px 4px 0 0;
+      background: rgba(59,111,240,0.2);
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .bar.active { background: var(--accent); }
+
+    .floating-tag {
+      position: absolute;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+
+    .floating-tag-1 {
+      top: -20px; right: -30px;
+      animation: float1 4s ease-in-out infinite;
+    }
+
+    .floating-tag-2 {
+      bottom: 30px; left: -30px;
+      animation: float2 5s ease-in-out infinite;
+    }
+
+    @keyframes float1 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes float2 {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(8px); }
+    }
+
+    .tag-icon {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .tag-icon-blue { background: rgba(59,111,240,0.2); }
+    .tag-icon-green { background: rgba(0,229,160,0.15); }
+
+    .tag-info .tag-val {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .tag-info .tag-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── SECTION GENERIC ── */
+    section {
+      padding: 100px 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 24px; height: 1px;
+      background: var(--accent);
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: clamp(34px, 4vw, 52px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      color: var(--white);
+      line-height: 1.08;
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.65;
+      margin-top: 16px;
+      max-width: 520px;
+    }
+
+    .section-head {
+      margin-bottom: 60px;
+    }
+
+    .section-head-center {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .section-head-center .section-label {
+      justify-content: center;
+    }
+
+    .section-head-center .section-sub {
+      margin: 16px auto 0;
+    }
+
+    /* ── SERVICES ── */
+    #services { background: var(--mid); }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .service-card {
+      background: var(--card);
+      padding: 40px 36px;
+      transition: background 0.3s;
+      cursor: default;
+    }
+
+    .service-card:hover { background: #1A1A25; }
+
+    .service-icon {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 28px;
+      font-size: 22px;
+      background: rgba(59,111,240,0.1);
+      border: 1px solid rgba(59,111,240,0.2);
+    }
+
+    .service-card:nth-child(2) .service-icon {
+      background: rgba(108,71,255,0.1);
+      border-color: rgba(108,71,255,0.2);
+    }
+
+    .service-card:nth-child(3) .service-icon {
+      background: rgba(0,229,160,0.08);
+      border-color: rgba(0,229,160,0.2);
+    }
+
+    .service-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+      letter-spacing: -0.3px;
+    }
+
+    .service-desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+
+    .service-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      margin-top: 24px;
+      transition: gap 0.2s;
+    }
+
+    .service-link:hover { gap: 10px; }
+
+    /* ── SOLUTIONS ── */
+    #solutions { background: var(--black); }
+
+    .solutions-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .solution-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .solution-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 22px 20px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .solution-item:hover, .solution-item.active {
+      background: rgba(59,111,240,0.07);
+      border-color: rgba(59,111,240,0.2);
+    }
+
+    .solution-num {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent);
+      padding-top: 3px;
+      min-width: 24px;
+    }
+
+    .solution-info-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .solution-info-desc {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .solutions-visual {
+      position: sticky;
+      top: 100px;
+    }
+
+    .solutions-panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .solutions-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent2), transparent);
+    }
+
+    .panel-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,229,160,0.1);
+      border: 1px solid rgba(0,229,160,0.2);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.8px;
+      margin-bottom: 12px;
+    }
+
+    .panel-desc {
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.65;
+      margin-bottom: 32px;
+    }
+
+    .panel-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .panel-feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .check-icon {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: rgba(0,229,160,0.12);
+      border: 1px solid rgba(0,229,160,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 10px;
+      color: var(--green);
+    }
+
+    /* ── TRUSTED BY ── */
+    #trust {
+      background: var(--mid);
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .trust-inner {
+      display: flex;
+      align-items: center;
+      gap: 60px;
+    }
+
+    .trust-label {
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+      min-width: 120px;
+    }
+
+    .trust-logos {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .trust-logo {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: -0.3px;
+      transition: color 0.2s;
+    }
+
+    .trust-logo:hover { color: rgba(255,255,255,0.5); }
+
+    /* ── TEAM ── */
+    #team { background: var(--black); }
+
+    .team-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .team-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      margin-top: 40px;
+    }
+
+    .team-feature {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .team-feature-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .team-feature-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .team-feature-desc {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .team-visual-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .team-metric-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      transition: border-color 0.2s;
+    }
+
+    .team-metric-card:hover { border-color: var(--border-hover); }
+    .team-metric-card.span2 { grid-column: span 2; }
+
+    .metric-val {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .metric-val .unit { color: var(--accent); }
+
+    .metric-label {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .metric-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 16px;
+      overflow: hidden;
+    }
+
+    .metric-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+
+    /* ── TESTIMONIALS ── */
+    #testimonials { background: var(--mid); }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .testimonial-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: border-color 0.3s;
+    }
+
+    .testimonial-card:hover { border-color: var(--border-hover); }
+
+    .testimonial-stars {
+      display: flex;
+      gap: 3px;
+      color: #F5C842;
+      font-size: 13px;
+    }
+
+    .testimonial-quote {
+      font-size: 15px;
+      color: var(--text);
+      font-weight: 300;
+      line-height: 1.7;
+      font-style: italic;
+      flex: 1;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .author-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .av-blue { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+    .av-green { background: linear-gradient(135deg, #00b890, #00e5a0); }
+    .av-purple { background: linear-gradient(135deg, #8b5cf6, #6c47ff); }
+
+    .author-name {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .author-role {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── CTA ── */
+    #contact {
+      background: var(--black);
+      padding: 120px 0;
+    }
+
+    .cta-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 80px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+    }
+
+    .cta-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59,111,240,0.12) 0%, transparent 65%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .cta-box h2 {
+      font-size: clamp(36px, 5vw, 58px);
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .cta-box p {
+      font-size: 18px;
+      color: var(--muted);
+      font-weight: 300;
+      margin-bottom: 44px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    .btn-large {
+      padding: 14px 32px;
+      font-size: 16px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--mid);
+      border-top: 1px solid var(--border);
+      padding: 60px 0 32px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 48px;
+    }
+
+    .footer-brand-name {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    .footer-brand-desc {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.6;
+      max-width: 260px;
+    }
+
+    .footer-partner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(59,111,240,0.1);
+      border: 1px solid rgba(59,111,240,0.2);
+      color: #7fa8f8;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 6px 12px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .footer-col-title {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 20px;
+      letter-spacing: 0.02em;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 300;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    .footer-bottom {
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    /* ── ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 900px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero-visual { display: none; }
+      .services-grid { grid-template-columns: 1fr; }
+      .solutions-layout { grid-template-columns: 1fr; }
+      .solutions-visual { position: static; display: none; }
+      .team-layout { grid-template-columns: 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .cta-box { padding: 48px 32px; }
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .container { padding: 0 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grid-lines"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <span class="logo-dot"></span>
+      ELIAN Solutions
+    </a>
+    <ul class="nav-links">
+      <li><a href="#services">Servicii</a></li>
+      <li><a href="#solutions">Soluții</a></li>
+      <li><a href="#team">Despre noi</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="btn btn-primary">Solicită consultație</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+    <div class="container">
+      <div class="hero-inner">
+        <div>
+          <div class="hero-badge">
+            <span class="dot"></span>
+            Partner Microsoft Dynamics 365
+          </div>
+          <h1>ERP Enterprise.<br><span class="accent-text">Redefinit.</span></h1>
+          <p class="hero-sub">
+            18+ ani de implementări end-to-end Microsoft Dynamics 365 Business Central cu AI integrat. Transformăm operațiunile companiilor care vor să crească cu adevărat.
+          </p>
+          <div class="hero-ctas">
+            <a href="#contact" class="btn btn-primary btn-large">Solicită consultație gratuită →</a>
+            <a href="#solutions" class="btn btn-ghost btn-large">Descoperă soluțiile</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-num">500<span>+</span></div>
+              <div class="stat-label">Proiecte finalizate</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">18<span>+</span></div>
+              <div class="stat-label">Ani experiență</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">50<span>+</span></div>
+              <div class="stat-label">Experți certificați</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero visual -->
+        <div class="hero-visual">
+          <div class="hero-card-main">
+            <div class="dashboard-preview">
+              <div class="dash-header">
+                <span class="dash-title">Business Central Dashboard</span>
+                <span class="dash-badge">● Live</span>
+              </div>
+              <div class="dash-metrics">
+                <div class="dash-metric">
+                  <div class="dash-metric-val">€2.4M</div>
+                  <div class="dash-metric-lbl">Revenue Q2</div>
+                </div>
+                <div class="dash-metric">
+                  <div class="dash-metric-val">+38%</div>
+                  <div class="dash-metric-lbl">Eficiență ops.</div>
+                </div>
+              </div>
+              <div class="dash-chart">
+                <div class="bar" style="height:35%"></div>
+                <div class="bar" style="height:55%"></div>
+                <div class="bar" style="height:42%"></div>
+                <div class="bar" style="height:68%"></div>
+                <div class="bar" style="height:52%"></div>
+                <div class="bar active" style="height:85%"></div>
+                <div class="bar" style="height:76%"></div>
+                <div class="bar" style="height:88%"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="floating-tag floating-tag-1">
+            <div class="tag-icon tag-icon-blue">🔵</div>
+            <div class="tag-info">
+              <div class="tag-val">Microsoft Gold</div>
+              <div class="tag-sub">Partner certificat</div>
+            </div>
+          </div>
+
+          <div class="floating-tag floating-tag-2">
+            <div class="tag-icon tag-icon-green">✓</div>
+            <div class="tag-info">
+              <div class="tag-val">99% satisfacție</div>
+              <div class="tag-sub">Clienți activi</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUSTED BY -->
+  <div id="trust">
+    <div class="container">
+      <div class="trust-inner">
+        <span class="trust-label">Parteneri & clienți</span>
+        <div class="trust-logos">
+          <span class="trust-logo">Microsoft</span>
+          <span class="trust-logo">Dynamics 365</span>
+          <span class="trust-logo">Business Central</span>
+          <span class="trust-logo">Power BI</span>
+          <span class="trust-logo">Azure</span>
+          <span class="trust-logo">Pipol</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="section-label">Servicii</span>
+        <h2>Tot ce ai nevoie<br>pentru transformare digitală</h2>
+        <p class="section-sub">Soluții complete de la strategie la implementare, suport continuu și optimizare.</p>
+      </div>
+
+      <div class="services-grid reveal">
+        <div class="service-card">
+          <div class="service-icon">⚡</div>
+          <div class="service-title">Implementare ERP</div>
+          <p class="service-desc">Implementări end-to-end Microsoft Dynamics 365 Business Central cu AI integrat. Metodologie agile, time-to-value redus, livrare garantată.</p>
+          <a href="#contact" class="service-link">Detalii →</a>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🛡</div>
+          <div class="service-title">Suport & Mentenanță</div>
+          <p class="service-desc">Suport 24/7, actualizări legislative continue și optimizare permanentă a sistemelor. SLA garantat pentru fiecare client.</p>
+          <a href="#contact" class="service-link">Detalii →</a>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">◎</div>
+          <div class="service-title">Consultanță Strategică</div>
+          <p class="service-desc">Analiză aprofundată a proceselor, recomandări personalizate și planificare end-to-end pentru transformarea digitală a organizației.</p>
+          <a href="#contact" class="service-link">Detalii →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUTIONS -->
+  <section id="solutions">
+    <div class="container">
+      <div class="solutions-layout">
+        <div>
+          <div class="section-head reveal">
+            <span class="section-label">Soluții</span>
+            <h2>Specializate<br>pe industria ta</h2>
+            <p class="section-sub">Soluții verticale construite specific pentru procesele din industria ta.</p>
+          </div>
+
+          <ul class="solution-list">
+            <li class="solution-item active reveal" onclick="setActive(this, 'bc')">
+              <span class="solution-num">01</span>
+              <div>
+                <div class="solution-info-title">Localizare Business Central</div>
+                <div class="solution-info-desc">Conformitate cu legislația română — e-Factura, e-Transport, D394</div>
+              </div>
+            </li>
+            <li class="solution-item reveal" onclick="setActive(this, 'prod')">
+              <span class="solution-num">02</span>
+              <div>
+                <div class="solution-info-title">Producție & Manufacturing</div>
+                <div class="solution-info-desc">Gestiune completă a proceselor de producție, cost real și standard</div>
+              </div>
+            </li>
+            <li class="solution-item reveal" onclick="setActive(this, 'agri')">
+              <span class="solution-num">03</span>
+              <div>
+                <div class="solution-info-title">Producție Agricolă</div>
+                <div class="solution-info-desc">Soluții specializate pentru gestionarea culturilor și activităților agricole</div>
+              </div>
+            </li>
+            <li class="solution-item reveal" onclick="setActive(this, 'retail')">
+              <span class="solution-num">04</span>
+              <div>
+                <div class="solution-info-title">Retail & Distribuție</div>
+                <div class="solution-info-desc">Management stoc, vânzări, distribuție și lanț de aprovizionare</div>
+              </div>
+            </li>
+            <li class="solution-item reveal" onclick="setActive(this, 'imob')">
+              <span class="solution-num">05</span>
+              <div>
+                <div class="solution-info-title">Imobiliare</div>
+                <div class="solution-info-desc">Management complet proprietăți, contracte și chirii</div>
+              </div>
+            </li>
+            <li class="solution-item reveal" onclick="setActive(this, 'proj')">
+              <span class="solution-num">06</span>
+              <div>
+                <div class="solution-info-title">Gestiunea Proiectelor</div>
+                <div class="solution-info-desc">Urmărire proiecte, bugete, resurse și profitabilitate</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="solutions-visual">
+          <div class="solutions-panel">
+            <div class="panel-tag">
+              <span>●</span> <span id="panel-tag-text">Soluție activă</span>
+            </div>
+            <div class="panel-title" id="panel-title">Localizare Business Central</div>
+            <p class="panel-desc" id="panel-desc">Soluție completă de conformitate fiscală pentru România. Integrare nativă cu platformele ANAF: e-Factura, e-Transport, Declarația 394 și verificare CUI parteneri.</p>
+            <ul class="panel-features" id="panel-features">
+              <li class="panel-feature"><span class="check-icon">✓</span> e-Factura & e-Transport integrate</li>
+              <li class="panel-feature"><span class="check-icon">✓</span> Declarația 394 automată</li>
+              <li class="panel-feature"><span class="check-icon">✓</span> Verificare CUI în timp real</li>
+              <li class="panel-feature"><span class="check-icon">✓</span> Update legislativ continuu</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM / WHY US -->
+  <section id="team" style="background: var(--mid);">
+    <div class="container">
+      <div class="team-layout">
+        <div>
+          <div class="section-head reveal">
+            <span class="section-label">De ce ELIAN</span>
+            <h2>Experți certificați.<br>Rezultate garantate.</h2>
+          </div>
+          <ul class="team-features">
+            <li class="team-feature reveal">
+              <div class="team-feature-icon">👥</div>
+              <div>
+                <div class="team-feature-title">Echipă dedicată</div>
+                <div class="team-feature-desc">Consultant dedicat per proiect, nu outsourcing anonim. Cunoaștem contextul tău.</div>
+              </div>
+            </li>
+            <li class="team-feature reveal">
+              <div class="team-feature-icon">⚡</div>
+              <div>
+                <div class="team-feature-title">Implementare rapidă</div>
+                <div class="team-feature-desc">Metodologie Agile cu milestone-uri clare. Go-live predictibil, fără surprize.</div>
+              </div>
+            </li>
+            <li class="team-feature reveal">
+              <div class="team-feature-icon">🌍</div>
+              <div>
+                <div class="team-feature-title">Prezență internațională</div>
+                <div class="team-feature-desc">Prin Pipol, implementăm ERP la nivel global. Suportăm multinationale cu operațiuni în România.</div>
+              </div>
+            </li>
+            <li class="team-feature reveal">
+              <div class="team-feature-icon">🛡</div>
+              <div>
+                <div class="team-feature-title">Garanție de succes</div>
+                <div class="team-feature-desc">Angajament contractual pentru atingerea obiectivelor. SLA clar și transparent.</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="team-visual-grid reveal">
+          <div class="team-metric-card">
+            <div class="metric-val">18<span class="unit">+</span></div>
+            <div class="metric-label">Ani în piața ERP</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: 90%"></div></div>
+          </div>
+          <div class="team-metric-card">
+            <div class="metric-val">50<span class="unit">+</span></div>
+            <div class="metric-label">Consultanți certificați</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: 75%"></div></div>
+          </div>
+          <div class="team-metric-card span2">
+            <div class="metric-val">500<span class="unit">+</span></div>
+            <div class="metric-label">Proiecte finalizate cu succes în România și Europa de Est</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: 95%"></div></div>
+          </div>
+          <div class="team-metric-card span2">
+            <div class="metric-val">99<span class="unit">%</span></div>
+            <div class="metric-label">Rata de satisfacție a clienților la 12 luni post-implementare</div>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: 99%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="testimonials">
+    <div class="container">
+      <div class="section-head-center reveal">
+        <span class="section-label">Testimoniale</span>
+        <h2>Ce spun clienții noștri</h2>
+        <p class="section-sub">Transformări reale, rezultate măsurabile.</p>
+      </div>
+
+      <div class="testimonials-grid">
+        <div class="testimonial-card reveal">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"Implementarea ERP a transformat complet modul în care operăm. Am văzut o creștere de 40% în eficiența operațională în primele 6 luni."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar av-blue">IP</div>
+            <div>
+              <div class="author-name">Ion Popescu</div>
+              <div class="author-role">Director General, Manufacturing</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"Echipa ELIAN a înțeles din prima nevoile noastre specifice din agriculturā. Soluția livrată depășit așteptările în complexitate și funcționalitate."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar av-green">MA</div>
+            <div>
+              <div class="author-name">Maria Aldea</div>
+              <div class="author-role">CEO, AgriTech Company</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card reveal">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"Suportul post-implementare este excepțional. Nu am mai lucrat cu un partener IT atât de reactiv și proactiv în 15 ani de business."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar av-purple">RD</div>
+            <div>
+              <div class="author-name">Radu Drăghici</div>
+              <div class="author-role">CFO, Retail Group</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="contact">
+    <div class="container">
+      <div class="cta-box reveal">
+        <div class="cta-glow"></div>
+        <h2>Gata să transformi<br><span class="accent-text">afacerea ta?</span></h2>
+        <p>Consultație gratuită cu un expert certificat Microsoft. Fără angajamente, cu valoare reală din prima întâlnire.</p>
+        <div class="cta-actions">
+          <a href="mailto:office@elian-solutions.ro" class="btn btn-primary btn-large">Solicită consultație →</a>
+          <a href="tel:+40" class="btn btn-ghost btn-large">Sună-ne direct</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand-name">ELIAN Solutions</div>
+          <p class="footer-brand-desc">Unul dintre cei mai importanți parteneri Microsoft din România și Europa de Est. Specializați în implementări ERP end-to-end cu AI integrat.</p>
+          <div class="footer-partner">🔵 Microsoft Dynamics 365 Partner</div>
+        </div>
+        <div>
+          <div class="footer-col-title">Servicii</div>
+          <ul class="footer-links">
+            <li><a href="#">Implementare ERP</a></li>
+            <li><a href="#">Suport & Mentenanță</a></li>
+            <li><a href="#">Upgrade</a></li>
+            <li><a href="#">Consultanță</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Soluții</div>
+          <ul class="footer-links">
+            <li><a href="#">Business Central</a></li>
+            <li><a href="#">Producție</a></li>
+            <li><a href="#">Retail & Distribuție</a></li>
+            <li><a href="#">e-Factura / e-Transport</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Companie</div>
+          <ul class="footer-links">
+            <li><a href="#">Despre noi</a></li>
+            <li><a href="#">Echipă</a></li>
+            <li><a href="#">Certificări</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2026 ELIAN Solutions SRL. Toate drepturile rezervate.</span>
+        <span class="footer-copy">Propunere de redesign — Optirank Solutions</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── SCROLL REVEAL ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, 80);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ── NAV SCROLL EFFECT ──
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        nav.style.borderBottomColor = 'rgba(255,255,255,0.1)';
+      } else {
+        nav.style.borderBottomColor = 'rgba(255,255,255,0.07)';
+      }
+    });
+
+    // ── SOLUTIONS PANEL ──
+    const panels = {
+      bc: {
+        tag: 'Conformitate ANAF',
+        title: 'Localizare Business Central',
+        desc: 'Soluție completă de conformitate fiscală pentru România. Integrare nativă cu platformele ANAF: e-Factura, e-Transport, Declarația 394 și verificare CUI parteneri.',
+        features: ['e-Factura & e-Transport integrate', 'Declarația 394 automată', 'Verificare CUI în timp real', 'Update legislativ continuu']
+      },
+      prod: {
+        tag: 'Manufacturing',
+        title: 'Producție & Manufacturing',
+        desc: 'Gestiune completă a proceselor de producție la cost real sau standard. Redistribuire cheltuieli indirecte, planificare resurse și urmărire în timp real.',
+        features: ['Cost real și standard', 'Planificare producție (MRP)', 'Urmărire WIP în timp real', 'Integrare stoc și achiziții']
+      },
+      agri: {
+        tag: 'Agricultură',
+        title: 'Producție Agricolă',
+        desc: 'Soluții specializate pentru gestionarea culturilor, activităților agricole și parcelelor. Specific pentru agricultura românească cu sezonalitate și subvenții.',
+        features: ['Gestiune parcele & culturi', 'Planificare lucrări agricole', 'Urmărire costuri per hectar', 'Integrare subvenții APIA']
+      },
+      retail: {
+        tag: 'Retail',
+        title: 'Retail & Distribuție',
+        desc: 'Management complet al stocului, vânzărilor, distribuției și lanțului de aprovizionare. De la POS până la depozit central.',
+        features: ['Gestiune multi-depozit', 'Integrare POS și e-commerce', 'Planificare aprovizionare', 'Rapoarte vânzări în timp real']
+      },
+      imob: {
+        tag: 'Real Estate',
+        title: 'Imobiliare',
+        desc: 'Management complet al proprietăților, contractelor de închiriere și administrării imobilelor. Soluție construită specific pentru piața din România.',
+        features: ['Gestiune contracte chirie', 'Indexare automată prețuri', 'Urmărire plăți și restanțe', 'Rapoarte proprietăți']
+      },
+      proj: {
+        tag: 'Project Management',
+        title: 'Gestiunea Proiectelor',
+        desc: 'Urmărire completă a proiectelor: bugete, resurse, profitabilitate și facturare. Ideal pentru companii de servicii profesionale și construcții.',
+        features: ['Planificare buget & resurse', 'Urmărire timp și costuri', 'Facturare proiect automată', 'Analiză profitabilitate']
+      }
+    };
+
+    function setActive(el, key) {
+      document.querySelectorAll('.solution-item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+      const p = panels[key];
+      document.getElementById('panel-tag-text').textContent = p.tag;
+      document.getElementById('panel-title').textContent = p.title;
+      document.getElementById('panel-desc').textContent = p.desc;
+      const featEl = document.getElementById('panel-features');
+      featEl.innerHTML = p.features.map(f => `<li class="panel-feature"><span class="check-icon">✓</span> ${f}</li>`).join('');
+    }
+  </script>
+</body>
+</html>
